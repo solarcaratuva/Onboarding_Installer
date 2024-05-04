@@ -1,10 +1,8 @@
-import requests
 import subprocess
 import json
 import os
 
 def download_file(url: str, save_path: str) -> bool:
-    return True
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -17,15 +15,22 @@ def download_file(url: str, save_path: str) -> bool:
         return False
 
 def run_cmd(cmd: str) -> bool:
-    return True
     try:
         process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.returncode == 0
     except Exception:
         return False
     
+def import_requests() -> None:
+    if not run_cmd("pip install requests"):
+        print("FATAL ERROR: Failed to install \'requests\' module")
+        exit(1)
+    
 
 # MAIN
+import_requests()
+import requests
+
 with open("windows.json", "r") as file:
     instructions = json.load(file)
 
@@ -57,4 +62,3 @@ for instruction in instructions:
         print("\tCommand execution \033[31mfailed\033[0m")
         continue
     
-        
