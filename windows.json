@@ -2,7 +2,7 @@
     {
         "text": "Installing Git",
         "download_URL": ["https://github.com/git-for-windows/git/releases/download/v2.45.0.windows.1/Git-2.45.0-64-bit.exe", "git_installer.exe"],
-        "cmd": "git_installer.exe",
+        "cmd": "git_installer.exe \\SILENT",
         "path": "C:\\Program Files\\Git"
     },
     {
@@ -10,6 +10,11 @@
         "download_URL": ["https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user", "vs_code_installer.exe"],
         "cmd": "vs_code_installer.exe /silent /mergetasks=!runcode",
         "path": "~\\AppData\\Local\\Programs\\Microsoft VS Code"
+    },
+    {
+        "text": "Installing VS Code Extension \"%ITER%\"",
+        "cmd": "code --install-extension %ITER% --force",
+        "iterations": ["ms-vscode-remote.vscode-remote-extensionpack", "ms-azuretools.vscode-docker", "ms-vscode.cpptools-extension-pack", "ms-python.python"]
     },
     {
         "text": "Installing Docker",
@@ -22,6 +27,27 @@
         "download_URL": ["https://github.com/dorssel/usbipd-win/releases/download/v4.2.0/usbipd-win_4.2.0.msi", "wslusb_installer.msi"],
         "cmd": "Msiexec /i wslusb_installer.msi /quiet",
         "path": "C:\\Program Files\\WSL USB"
+    },
+    {
+        "text": "Creating a directory for code on WSL at \"solarCarRepo\"",
+        "cmd": "wsl sh -c \"mkdir ~/solarCarRepo\"",
+        "skip_cmd": "wsl sh -c \"[ -d \"~/solarCarRepo\" ] && exit 0 || exit 1\""
+    },
+    {
+        "text": "Cloning the \"%ITER%\" repository",
+        "cmd": "wsl sh -c \"cd ~/solarCarRepo/ && git clone https://github.com/solarcaratuva/%ITER%.git\"",
+        "skip_cmd": "wsl sh -c \"[ -d \"~/solarCarRepo/%ITER%\" ] && exit 0 || exit 1\"",
+        "iterations": ["Rivanna2S"]
+    },
+    {
+        "text": "Creating the \"%ITER%_compile\" docker container",
+        "cmd": "wsl sh -c \"docker run -d -it --name %ITER%_compile -v ~/solarCarRepo/%ITER%/:/root/Rivanna2:Z ghcr.io/solarcaratuva/rivanna2-env\"",
+        "skip_cmd": "wsl sh -c \"docker ps -a --format '{{.Names}}' | grep -q \"%ITER%_compile\" && exit 0 || exit 1\"",
+        "iterations": ["Rivanna2S"]
+    },
+    {
+        "text": "Running \"mbed-tools deploy\" to initialize the compiler in the \"%ITER%_compile\" container",
+        "cmd": "docker exec %ITER%_compile sh -c \"cd Rivanna2 && mbed-tools deploy\"",
+        "iterations": ["Rivanna2S"]
     }
-    
 ]

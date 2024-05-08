@@ -35,30 +35,34 @@ with open("windows.json", "r") as file:
     instructions = json.load(file)
 
 for instruction in instructions:
-    print(instruction["text"]+":")
+    iterations = instruction["iterations"] if "iterations" in instruction else ["1 iteration only"]
+    for iter in iterations:
+        print(instruction["text"].replace("%ITER%", iter)+":")
 
-    if "path" in instruction and os.path.exists(os.path.expanduser(instruction["path"])):
-        print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
-        continue
-
-    if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"]):
-        print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
-        continue
-
-    if "download_URL" in instruction:
-        url = instruction["download_URL"][0]
-        save_path = instruction["download_URL"][1]
-        result = download_file(url, save_path)
-        if result:
-            print("\tDownloaded \033[32msuccessfully\033[0m")
-        else:
-            print("\tDownload \033[31mfailed\033[0m")
+        if "path" in instruction and os.path.exists(os.path.expanduser(instruction["path"])):
+            print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
-    result = run_cmd(instruction["cmd"])
-    if result:
-        print("\tCommand executed \033[32msuccessfully\033[0m")
-    else:
-        print("\tCommand execution \033[31mfailed\033[0m")
-        continue
+        if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"].replace("%ITER%", iter)):
+            print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
+            continue
+
+        if "download_URL" in instruction:
+            url = instruction["download_URL"][0]
+            save_path = instruction["download_URL"][1]
+            result = download_file(url, save_path)
+            if result:
+                print("\tDownloaded \033[32msuccessfully\033[0m")
+            else:
+                print("\tDownload \033[31mfailed\033[0m")
+                continue
+
+        result = run_cmd(instruction["cmd"].replace("%ITER%", iter))
+        if result:
+            print("\tCommand executed \033[32msuccessfully\033[0m")
+        else:
+            print("\tCommand execution \033[31mfailed\033[0m")
+            continue
+
+print("DONE!")
     
