@@ -16,7 +16,8 @@ def download_file(url: str, save_path: str) -> bool:
 
 def run_cmd(cmd: str) -> bool:
     try:
-        process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        envVars = os.environ
+        process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=envVars)
         return process.returncode == 0
     except Exception:
         return False
