@@ -26,7 +26,7 @@
         "text": "Installing WSL USB",
         "download_URL": ["https://github.com/dorssel/usbipd-win/releases/download/v4.2.0/usbipd-win_4.2.0.msi", "wslusb_installer.msi"],
         "cmd": "Msiexec /i wslusb_installer.msi /quiet",
-        "path": "C:\\Program Files\\WSL USB"
+        "path": "C:\\Program Files\\usbipd-win"
     },
     {
         "text": "Creating a directory for code on WSL at \"solarCarRepo\"",
