@@ -2,7 +2,7 @@
     {
         "text": "Installing Git",
         "download_URL": ["https://github.com/git-for-windows/git/releases/download/v2.45.0.windows.1/Git-2.45.0-64-bit.exe", "git_installer.exe"],
-        "cmd": "git_installer.exe \\SILENT",
+        "cmd": "git_installer.exe /SILENT",
         "path": "C:\\Program Files\\Git"
     },
     {
@@ -13,11 +13,11 @@
     },
     {
         "text": "Installing VS Code Extension \"%ITER%\"",
-        "cmd": "code --install-extension %ITER% --force",
+        "cmd": "cd \"~\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\\" && .\\code --install-extension %ITER% --force",
         "iterations": ["ms-vscode-remote.vscode-remote-extensionpack", "ms-azuretools.vscode-docker", "ms-vscode.cpptools-extension-pack", "ms-python.python"]
     },
     {
-        "text": "Installing Docker",
+        "text": "Installing Docker (takes a while)",
         "download_URL": ["https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module", "docker_installer.exe"],
         "cmd": "docker_installer.exe install --quiet --noreboot",
         "path": "C:\\Program Files\\Docker"
@@ -27,6 +27,21 @@
         "download_URL": ["https://github.com/dorssel/usbipd-win/releases/download/v4.2.0/usbipd-win_4.2.0.msi", "wslusb_installer.msi"],
         "cmd": "Msiexec /i wslusb_installer.msi /quiet",
         "path": "C:\\Program Files\\usbipd-win"
+    },
+    {
+        "text": "Updating all packages on WSL (takes a while)",
+        "cmd": "wsl sh -c \"echo %IN% | sudo -S apt-get -y update && echo %IN% | sudo -S apt-get -y upgrade\""
+    },
+    {
+        "text": "Installing \"%ITER%\" package on WSL using apt-get",
+        "cmd": "wsl sh -c \"echo %IN% | sudo -S apt-get -y install %ITER%\"",
+        "skip_cmd": "wsl sh -c \"dpkg-query -W -f='\\${Status}' %ITER% | grep -q 'installed'\"",
+        "iterations": ["git", "docker", "cmake", "libusb-1.0-0-dev"]
+    },
+    {
+        "text": "Installing ST-Flash on WSL using dpkg (takes a while)",
+        "cmd": "wsl sh -c \"wget -P /tmp/ https://github.com/stlink-org/stlink/releases/download/v1.7.0/stlink_1.7.0-1_amd64.deb && echo %IN% | sudo -S dpkg -i --force-overwrite /tmp/stlink_1.7.0-1_amd64.deb\"",
+        "skip_cmd": "wsl sh -c \"dpkg-query -W -f='\\${Status}' stlink | grep -q 'installed'\""
     },
     {
         "text": "Creating a directory for code on WSL at \"solarCarRepo\"",

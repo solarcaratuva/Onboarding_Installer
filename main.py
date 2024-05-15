@@ -1,6 +1,7 @@
 import subprocess
 import json
 import os
+import sys
 
 def download_file(url: str, save_path: str) -> bool:
     try:
@@ -16,8 +17,7 @@ def download_file(url: str, save_path: str) -> bool:
 
 def run_cmd(cmd: str) -> bool:
     try:
-        envVars = os.environ
-        process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=envVars)
+        process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process.returncode == 0
     except Exception:
         return False
@@ -29,8 +29,15 @@ def import_requests() -> None:
     
 
 # MAIN
+if len(sys.argv) != 2:
+    print("1 command line argument is expected. See the Readme for more information")
+    exit(1)
+input = sys.argv[1]
+
 import_requests()
 import requests
+
+user_path = os.path.expanduser("~")
 
 with open("windows.json", "r") as file:
     instructions = json.load(file)
@@ -38,13 +45,13 @@ with open("windows.json", "r") as file:
 for instruction in instructions:
     iterations = instruction["iterations"] if "iterations" in instruction else ["1 iteration only"]
     for iter in iterations:
-        print(instruction["text"].replace("%ITER%", iter)+":")
+        print(instruction["text"].replace("%ITER%", iter).replace("%IN%", input)+":")
 
-        if "path" in instruction and os.path.exists(os.path.expanduser(instruction["path"])):
+        if "path" in instruction and os.path.exists(instruction["path"].replace("~", user_path)):
             print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
-        if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"].replace("%ITER%", iter)):
+        if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"].replace("%ITER%", iter).replace("%IN%", input)):
             print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
@@ -58,7 +65,8 @@ for instruction in instructions:
                 print("\tDownload \033[31mfailed\033[0m")
                 continue
 
-        result = run_cmd(instruction["cmd"].replace("%ITER%", iter))
+        cmd = instruction["cmd"].replace("%ITER%", iter).replace("%IN%", input).replace("~", user_path)
+        result = run_cmd(cmd)
         if result:
             print("\tCommand executed \033[32msuccessfully\033[0m")
         else:
