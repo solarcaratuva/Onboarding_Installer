@@ -9,11 +9,11 @@
         "text": "Installing VS Code",
         "download_URL": ["https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user", "vs_code_installer.exe"],
         "cmd": "vs_code_installer.exe /silent /mergetasks=!runcode",
-        "path": "~\\AppData\\Local\\Programs\\Microsoft VS Code"
+        "path": "~~~\\AppData\\Local\\Programs\\Microsoft VS Code"
     },
     {
         "text": "Installing VS Code Extension \"%ITER%\"",
-        "cmd": "cd \"~\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\\" && .\\code --install-extension %ITER% --force",
+        "cmd": "cd \"~~~\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\\" && .\\code --install-extension %ITER% --force",
         "iterations": ["ms-vscode-remote.vscode-remote-extensionpack", "ms-azuretools.vscode-docker", "ms-vscode.cpptools-extension-pack", "ms-python.python"]
     },
     {
@@ -40,7 +40,7 @@
     },
     {
         "text": "Installing ST-Flash on WSL using dpkg (takes a while)",
-        "cmd": "wsl sh -c \"wget -P /tmp/ https://github.com/stlink-org/stlink/releases/download/v1.7.0/stlink_1.7.0-1_amd64.deb && echo %IN% | sudo -S dpkg -i --force-overwrite /tmp/stlink_1.7.0-1_amd64.deb\"",
+        "cmd": "wsl sh -c \"wget -P /tmp/ https://github.com/stlink-org/stlink/releases/download/v1.7.0/stlink_1.7.0-1_amd64.deb && echo %IN% | sudo -S dpkg -i --force-overwrite /tmp/stlink_1.7.0-1_amd64.deb || echo %IN% | sudo -S apt -y --fix-broken install\"",
         "skip_cmd": "wsl sh -c \"dpkg-query -W -f='\\${Status}' stlink | grep -q 'installed'\""
     },
     {

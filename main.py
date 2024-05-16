@@ -2,6 +2,10 @@ import subprocess
 import json
 import os
 import sys
+import atexit
+
+log = open("log.txt", "w")
+atexit.register(lambda: log.close)
 
 def download_file(url: str, save_path: str) -> bool:
     try:
@@ -16,10 +20,15 @@ def download_file(url: str, save_path: str) -> bool:
         return False
 
 def run_cmd(cmd: str) -> bool:
+    log.write(f"COMMAND: \n{cmd}\nOUTPUT:\n")
     try:
-        process = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.run(cmd, shell=True, text=True, capture_output=True)
+        log.write(process.stdout)
+        log.write(process.stderr)
+        log.write(f"EXIT CODE: {process.returncode}\n")
         return process.returncode == 0
-    except Exception:
+    except Exception as e:
+        log.write(f"ERROR: {e}\n")
         return False
     
 def import_requests() -> None:
@@ -45,9 +54,11 @@ with open("windows.json", "r") as file:
 for instruction in instructions:
     iterations = instruction["iterations"] if "iterations" in instruction else ["1 iteration only"]
     for iter in iterations:
-        print(instruction["text"].replace("%ITER%", iter).replace("%IN%", input)+":")
+        text = instruction["text"].replace("%ITER%", iter).replace("%IN%", input)+":"
+        print(text)
+        log.write(f"\n\n{text}\n")
 
-        if "path" in instruction and os.path.exists(instruction["path"].replace("~", user_path)):
+        if "path" in instruction and os.path.exists(instruction["path"].replace("~~~", user_path)):
             print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
@@ -65,7 +76,7 @@ for instruction in instructions:
                 print("\tDownload \033[31mfailed\033[0m")
                 continue
 
-        cmd = instruction["cmd"].replace("%ITER%", iter).replace("%IN%", input).replace("~", user_path)
+        cmd = instruction["cmd"].replace("%ITER%", iter).replace("%IN%", input).replace("~~~", user_path)
         result = run_cmd(cmd)
         if result:
             print("\tCommand executed \033[32msuccessfully\033[0m")
@@ -73,5 +84,5 @@ for instruction in instructions:
             print("\tCommand execution \033[31mfailed\033[0m")
             continue
 
-print("DONE!")
+print("DONE! Check \"log.txt\" for debug information")
     
