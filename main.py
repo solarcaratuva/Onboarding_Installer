@@ -3,6 +3,7 @@ import json
 import os
 import sys
 import atexit
+import platform
 
 log = open("log.txt", "w")
 atexit.register(lambda: log.close)
@@ -48,7 +49,15 @@ import requests
 
 user_path = os.path.expanduser("~")
 
-with open("windows.json", "r") as file:
+match platform.system():
+    case "Windows":
+        config = "windows.json"
+    case "Darwin":
+        config = "mac.json"
+    case _:
+        print("Unsupported OS: Only Windows and MacOS are supported")
+        exit(1)
+with open(config, "r") as file:
     instructions = json.load(file)
 
 for instruction in instructions:
