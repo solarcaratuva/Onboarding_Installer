@@ -33,9 +33,12 @@ def run_cmd(cmd: str) -> bool:
         return False
     
 def import_requests() -> None:
-    if not run_cmd("pip install requests"):
-        print("FATAL ERROR: Failed to install \'requests\' module")
-        exit(1)
+    cmdlets = ["", "py -m", "python3 -m", "python -m"]
+    for cmdlet in cmdlets:
+        if run_cmd(f"{cmdlet} pip install requests"):
+            return
+    print("FATAL ERROR: Failed to install \'requests\' module")
+    exit(1)
     
 
 # MAIN
