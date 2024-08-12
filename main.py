@@ -39,13 +39,18 @@ def import_requests() -> None:
             return
     print("FATAL ERROR: Failed to install \'requests\' module")
     exit(1)
+
+def pause(text: str) -> None:
+    print(f"{text} \nEnter \"continue\" to continue")
+    while input().strip().lower() != "continue":
+        print("Enter \"continue\" to continue")
     
 
 # MAIN
 if len(sys.argv) != 2:
     print("1 command line argument is expected. See the Readme for more information")
     exit(1)
-input = sys.argv[1]
+inp = sys.argv[1]
 
 import_requests()
 import requests
@@ -66,7 +71,7 @@ with open(config, "r") as file:
 for instruction in instructions:
     iterations = instruction["iterations"] if "iterations" in instruction else ["1 iteration only"]
     for iter in iterations:
-        text = instruction["text"].replace("%ITER%", iter).replace("%IN%", input)+":"
+        text = instruction["text"].replace("%ITER%", iter).replace("%IN%", inp)+":"
         print(text)
         log.write(f"\n\n{text}\n")
 
@@ -74,7 +79,7 @@ for instruction in instructions:
             print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
-        if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"].replace("%ITER%", iter).replace("%IN%", input)):
+        if "skip_cmd" in instruction and run_cmd(instruction["skip_cmd"].replace("%ITER%", iter).replace("%IN%", inp)):
             print("\tRequirement already fulfilled, \033[33mskipping\033[0m")
             continue
 
@@ -88,13 +93,16 @@ for instruction in instructions:
                 print("\tDownload \033[31mfailed\033[0m")
                 continue
 
-        cmd = instruction["cmd"].replace("%ITER%", iter).replace("%IN%", input).replace("~~~", user_path)
+        cmd = instruction["cmd"].replace("%ITER%", iter).replace("%IN%", inp).replace("~~~", user_path)
         result = run_cmd(cmd)
         if result:
             print("\tCommand executed \033[32msuccessfully\033[0m")
         else:
             print("\tCommand execution \033[31mfailed\033[0m")
             continue
+
+        if "pause" in instruction:
+            pause(instruction["pause"])
 
 print("DONE! Check \"log.txt\" for debug information")
     

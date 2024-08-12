@@ -18,17 +18,17 @@
         "text": "Cloning the \"%ITER%\" repository into \"%IN%\"",
         "cmd": "cd %IN% && git clone https://github.com/solarcaratuva/%ITER%.git",
         "skip_cmd": "[ -d \"%IN%/%ITER%\" ] && exit 0 || exit 1",
-        "iterations": ["Rivanna2S"]
+        "iterations": ["Rivanna2S", "Rivanna3"]
     },
     {
         "text": "Creating the \"%ITER%_compile\" docker container",
         "cmd": "docker run -d -it --name %ITER%_compile -v %IN%/%ITER%/:/root/Rivanna2:Z ghcr.io/solarcaratuva/rivanna2-env",
         "skip_cmd": "docker ps -a --format '{{.Names}}' | grep -q \"%ITER%_compile\" && exit 0 || exit 1",
-        "iterations": ["Rivanna2S"]
+        "iterations": ["Rivanna2S", "Rivanna3"]
     },
     {
         "text": "Running \"mbed-tools deploy\" to initialize the compiler in the \"%ITER%_compile\" container",
         "cmd": "docker exec %ITER%_compile sh -c \"cd Rivanna2 && mbed-tools deploy\"",
-        "iterations": ["Rivanna2S"]
+        "iterations": ["Rivanna2S", "Rivanna3"]
     }
 ]
