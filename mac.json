@@ -7,7 +7,12 @@
     {
         "text": "Installing %ITER% using Homebrew",
         "cmd": "brew install --cask %ITER%",
-        "iterations": ["visual-studio-code", "docker"]
+        "iterations": ["visual-studio-code"]
+    },
+    {
+        "text": "Installing Docker using Homebrew",
+        "cmd": "brew install --cask docker",
+        "pause": "Open Docker Desktop, accept the license, skip sign-in. Once \"Starting the Docker Engine\" goes away, leave the app open and continue"
     },
     {
         "text": "Installing VS Code Extension \"%ITER%\"",

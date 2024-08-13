@@ -21,7 +21,7 @@
         "download_URL": ["https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module", "docker_installer.exe"],
         "cmd": "docker_installer.exe install --quiet",
         "path": "C:\\Program Files\\Docker",
-        "pause": "After the installer finishes installing, open Docker Desktop, accept the license, skip sign-in. Once \"Starting the Docker Engine\" goes away, leave the app open and continue"
+        "pause": "Open Docker Desktop, accept the license, skip sign-in. Once \"Starting the Docker Engine\" goes away, leave the app open and continue"
     },
     {
         "text": "Installing WSL USB",
