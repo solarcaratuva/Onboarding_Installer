@@ -17,11 +17,11 @@
         "iterations": ["ms-vscode-remote.vscode-remote-extensionpack", "ms-azuretools.vscode-docker", "ms-vscode.cpptools-extension-pack", "ms-python.python"]
     },
     {
-        "text": "Installing Docker",
+        "text": "Installing Docker (takes a while)",
         "download_URL": ["https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe?utm_source=docker&utm_medium=webreferral&utm_campaign=dd-smartbutton&utm_location=module", "docker_installer.exe"],
-        "cmd": "docker_installer.exe install",
+        "cmd": "docker_installer.exe install --quiet",
         "path": "C:\\Program Files\\Docker",
-        "pause": "After the installer finishes installing, open Docker Desktop, accept the license, skip sign-in. Once you see Docker's main menu, leave the app open and continue"
+        "pause": "After the installer finishes installing, open Docker Desktop, accept the license, skip sign-in. Once \"Starting the Docker Engine\" goes away, leave the app open and continue"
     },
     {
         "text": "Installing WSL USB",
@@ -56,14 +56,14 @@
         "iterations": ["Rivanna2S", "Rivanna3"]
     },
     {
-        "text": "Creating the \"%ITER%_compile\" docker container",
+        "text": "Creating the \"%ITER%_compile\" docker container (takes a while)",
         "cmd": "wsl sh -c \"docker run -d -it --name %ITER%_compile -v ~/solarCarRepo/%ITER%/:/root/Rivanna2:Z ghcr.io/solarcaratuva/rivanna2-env\"",
         "skip_cmd": "wsl sh -c \"docker ps -a --format '{{.Names}}' | grep -q \"%ITER%_compile\" && exit 0 || exit 1\"",
         "iterations": ["Rivanna2S", "Rivanna3"]
     },
     {
         "text": "Running \"mbed-tools deploy\" to initialize the compiler in the \"%ITER%_compile\" container",
-        "cmd": "docker exec %ITER%_compile sh -c \"cd Rivanna2 && mbed-tools deploy\"",
+        "cmd": "wsl sh -c \"docker exec %ITER%_compile sh -c 'cd Rivanna2 && mbed-tools deploy'\"",
         "iterations": ["Rivanna2S", "Rivanna3"]
     }
 ]

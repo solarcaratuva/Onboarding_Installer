@@ -24,8 +24,8 @@ def run_cmd(cmd: str) -> bool:
     log.write(f"COMMAND: \n{cmd}\nOUTPUT:\n")
     try:
         process = subprocess.run(cmd, shell=True, text=True, capture_output=True)
-        log.write(process.stdout)
-        log.write(process.stderr)
+        if process.stdout: log.write(process.stdout)
+        if process.stderr: log.write(process.stderr)
         log.write(f"EXIT CODE: {process.returncode}\n")
         return process.returncode == 0
     except Exception as e:
